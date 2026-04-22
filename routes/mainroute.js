@@ -26,6 +26,8 @@ const adminAchievements = require('./admin/achievementRoutes');
 const adminEnquiries = require('./admin/enquiryRoutes');
 const adminContacts = require('./admin/contactRoutes');
 const adminDashboard = require('./admin/dashboardCounts');
+const adminClients = require('./admin/clientRoutes');
+const adminTestimonials = require('./admin/testimonialRoutes');
 
 router.use('/admin/auth', adminAuth);
 router.use('/admin/products', adminProducts);
@@ -34,5 +36,7 @@ router.use('/admin/achievements', adminAchievements);
 router.use('/admin/enquiries', adminEnquiries);
 router.use('/admin/contacts', adminContacts);
 router.use('/admin/dashboard', adminDashboard);
+router.use('/admin/clients', adminClients);
+router.use('/admin/testimonials', adminTestimonials);
 
 module.exports = router;
