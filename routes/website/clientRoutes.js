@@ -3,7 +3,7 @@ const {
   getClients,
     getClient
 } = require('../../controller/website/clients/clients');
-
+const { getCategories } = require('../../controller/website/clients/clients');
 // const upload = require('../../middleware/upload');
 
 const router = express.Router();
@@ -13,9 +13,12 @@ router
   .get(getClients)
 // .post(upload.single('image'), createAchievement);
 
+router.get('/categories', getCategories);
+
 router
   .route('/:id')
   .get(getClient)
+
 //   .put(upload.single('image'), updateAchievement)
 //   .delete(deleteAchievement);
 

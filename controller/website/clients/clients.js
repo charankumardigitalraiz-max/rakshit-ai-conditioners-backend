@@ -1,19 +1,27 @@
+const mongoose = require('mongoose');
 const Client = require('../../../models/Client');
 const asyncHandler = require('../../../middleware/asyncHandler');
 const ErrorResponse = require('../../../utils/errorResponse');
-
-
+const Category = require('../../../models/Category');
 
 
 exports.getClients = asyncHandler(async (req, res, next) => {
   let page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 10;
+  const limit = parseInt(req.query.limit, 10) || 100; // Increased limit for website
   const startIndex = (page - 1) * limit;
-  let categoryId = req.query.category;
   let query = {};
-  if(categoryId !== 'All') {
-    categoryId = null;
+
+  // Category filter (support both 'category' and 'categoryId')
+  const categoryParam = req.query.category || req.query.categoryId;
+  if (categoryParam && categoryParam.toLowerCase() !== 'all') {
+    try {
+      query.category = new mongoose.Types.ObjectId(categoryParam);
+    } catch (err) {
+      console.error('Invalid category ID:', categoryParam);
+    }
   }
+
+
   // Search filter
   if (req.query.search) {
     const keyword = req.query.search;
@@ -22,10 +30,6 @@ exports.getClients = asyncHandler(async (req, res, next) => {
       { name: { $regex: keyword, $options: 'i' } },
       { location: { $regex: keyword, $options: 'i' } }
     ];
-  }
-
-  if (req.query.categoryId && req.query.categoryId !== 'All') {
-    query.category = req.query.category;
   }
 
   const total = await Client.countDocuments(query);
@@ -50,8 +54,8 @@ exports.getClients = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Get single client
-// @route   GET /api/admin/clients/:id
-// @access  Private (Admin)
+// @route   GET /api/clients/:id
+// @access  Public
 exports.getClient = asyncHandler(async (req, res, next) => {
   const client = await Client.findById(req.params.id).populate({ path: 'category', select: 'name' });
 
@@ -64,3 +68,14 @@ exports.getClient = asyncHandler(async (req, res, next) => {
     data: client
   });
 });
+
+
+exports.getCategories = asyncHandler(async (req, res, next) => {
+  const categories = await Category.find()
+
+  res.status(200).json({
+    success: true,
+    data: categories
+  });
+});
+
