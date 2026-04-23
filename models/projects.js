@@ -7,8 +7,9 @@ const projectSchema = new mongoose.Schema({
     trim: true
   },
   category: {
-    type: String,
-    required: [true, 'Please select a category']
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    default: null
   },
   location: String,
   date: String, // Timeline
@@ -20,7 +21,12 @@ const projectSchema = new mongoose.Schema({
   hvacSystemType: String,
   totalCapacity: String,
   description: String,
-  image: String
+  image: String,
+  // category: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   default: null
+  //   // ref: 'Category'
+  // }
 }, {
   timestamps: true
 });

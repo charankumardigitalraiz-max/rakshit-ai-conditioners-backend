@@ -6,15 +6,18 @@ const ErrorResponse = require('../../../utils/errorResponse');
 // @route   GET /api/projects
 // @access  Public
 exports.getProjects = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page, 10) || 1;
+  let page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
   const startIndex = (page - 1) * limit;
-
+  const categoryId = req.query.category;
   let query = {};
-
+  if(categoryId === 'All') {
+    categoryId = null;
+  }
   // Search filter
   if (req.query.search) {
     const keyword = req.query.search;
+    page = 1;
     query.$or = [
       { title: { $regex: keyword, $options: 'i' } },
       { category: { $regex: keyword, $options: 'i' } },
@@ -29,10 +32,14 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
   if (req.query.status && req.query.status !== 'All') {
     query.status = req.query.status;
   }
+  if (categoryId) {
+    query.category = categoryId;
+  }
 
   const total = await Project.countDocuments(query);
 
   const projects = await Project.find(query)
+    .populate({ path: 'category', select: 'name' })
     .sort({ createdAt: -1 })
     .skip(startIndex)
     .limit(limit);
@@ -54,7 +61,7 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
 // @route   GET /api/projects/:id
 // @access  Public
 exports.getProject = asyncHandler(async (req, res, next) => {
-  const project = await Project.findById(req.params.id);
+  const project = await Project.findById(req.params.id).populate({ path: 'category', select: 'name' });
 
   if (!project) {
     return next(new ErrorResponse(`Project not found with id of ${req.params.id}`, 404));

@@ -17,6 +17,11 @@ const clientSchema = new mongoose.Schema({
   image: {
     type: String,
     required: [true, 'Please add an image']
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    default: null
   }
 }, {
   timestamps: true

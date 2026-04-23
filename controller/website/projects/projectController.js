@@ -33,6 +33,7 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
     const total = await Project.countDocuments(query);
 
     const projects = await Project.find(query)
+        .populate({path: 'category', select: 'name'}) // Populate category name
         .sort({ createdAt: -1 })
         .skip(startIndex)
         .limit(limit);
@@ -54,7 +55,7 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
 // @route   GET /api/projects/:id
 // @access  Public
 exports.getProject = asyncHandler(async (req, res, next) => {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id).populate({path: 'category', select: 'name'}) 
 
     if (!project) {
         return next(new ErrorResponse(`Project not found with id of ${req.params.id}`, 404));
