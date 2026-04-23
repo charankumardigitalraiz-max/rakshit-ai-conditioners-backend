@@ -1,4 +1,4 @@
-const Category = require('../../models/category');
+const Category = require('../../models/Category');
 const ErrorResponse = require('../../utils/errorResponse');
 const asyncHandler = require('../../middleware/asyncHandler');
 // Get all categories
