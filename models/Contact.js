@@ -17,10 +17,10 @@ const ContactSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
-  subject: {
-    type: String,
-    required: [true, 'Please add a subject'],
-  },
+  // subject: {
+  //   type: String,
+  //   required: [true, 'Please add a subject'],
+  // },
   message: {
     type: String,
     required: [true, 'Please add a message'],
