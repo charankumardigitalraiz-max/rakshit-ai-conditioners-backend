@@ -8,10 +8,12 @@ const websiteAchievements = require('./website/achievementRoutes');
 const websiteEnquiries = require('./website/enquiryRoutes');
 const websiteClients = require('./website/clientRoutes');
 const websiteTestimonials = require('./website/testimonialRoutes');
+const websiteContacts = require('./website/contactRoutes');
 router.use('/products', websiteProducts);
 router.use('/projects', websiteProjects);
 router.use('/achievements', websiteAchievements);
 router.use('/enquiries', websiteEnquiries);
+router.use('/contacts', websiteContacts);
 router.use('/clients', websiteClients);
 router.use('/testimonials', websiteTestimonials);
 

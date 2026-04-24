@@ -21,6 +21,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Please add a product name'],
     trim: true
   },
+  slug: {
+    type: String,
+    unique: true,
+    required: true
+  },
   category: {
     type: String,
     required: [true, 'Please select a category']

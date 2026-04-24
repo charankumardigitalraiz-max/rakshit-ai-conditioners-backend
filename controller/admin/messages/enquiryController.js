@@ -16,9 +16,9 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
   if (req.query.search) {
     const keyword = req.query.search;
     matchQuery.$or = [
-      { name: { $regex: keyword, $options: 'i' } },
-      { email: { $regex: keyword, $options: 'i' } },
-      { message: { $regex: keyword, $options: 'i' } }
+      { fullName: { $regex: keyword, $options: 'i' } },
+      { details: { $regex: keyword, $options: 'i' } },
+      { interest: { $regex: keyword, $options: 'i' } }
     ];
   }
 
@@ -47,10 +47,10 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
           { $limit: limit },
           {
             $project: {
-              name: 1,
-              email: 1,
+              fullName: 1,
               phone: 1,
-              message: 1,
+              details: 1,
+              interest: 1,
               status: 1,
               variant: 1,
               createdAt: 1,

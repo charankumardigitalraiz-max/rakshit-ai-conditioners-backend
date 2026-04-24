@@ -1,45 +1,34 @@
 const mongoose = require('mongoose');
 
-const EnquirySchema = new mongoose.Schema({
-  name: {
+const enquirySchema = new mongoose.Schema({
+  fullName: {
     type: String,
     required: [true, 'Please add a name'],
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email',
-    ],
+    trim: true
   },
   phone: {
     type: String,
-    required: [true, 'Please add a phone number'],
+    required: [true, 'Please add a phone number']
+  },
+  interest: {
+    type: String,
+    required: [true, 'Please select an interest']
+  },
+  details: {
+    type: String,
+    trim: true
   },
   product: {
-    type: mongoose.Schema.Types.ObjectId,
-    // ref: 'Product',
-    required: [true, 'Please specify the product'],
-  },
-  variant: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, 'Please specify the variant'],
-  },
-  message: {
     type: String,
-    required: [true, 'Please add a message'],
+    default: null
   },
   status: {
     type: String,
-    enum: ['New', 'Replied', 'Closed'],
-    default: 'New',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+    enum: ['New', 'Contacted', 'Resolved', 'Replied', 'Closed'],
+    default: 'New'
+  }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model('Enquiry', EnquirySchema);
+module.exports = mongoose.model('Enquiry', enquirySchema);

@@ -20,6 +20,8 @@ const projectSchema = new mongoose.Schema({
   },
   hvacSystemType: String,
   totalCapacity: String,
+  duration: String,
+  hp: String,
   description: String,
   image: String,
   // category: {
