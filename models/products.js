@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    unique: true,
+    // unique: true,
     // required: true
   },
   category: {

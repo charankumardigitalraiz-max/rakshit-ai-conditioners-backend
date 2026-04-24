@@ -98,6 +98,12 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
   }
   
   req.body.images = galleryPaths;
+  
+  if (req.body.name) {
+    const baseSlug = req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    req.body.slug = `${baseSlug}-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+
   const product = await Product.create(req.body);
   res.status(201).json({
     success: true,
@@ -152,6 +158,11 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   const hasNewFiles = req.files && req.files.some(f => f.fieldname === 'imageGallery');
   if (req.body.existingImages || hasNewFiles) {
     req.body.images = galleryPaths;
+  }
+
+  if (req.body.name && !product.slug) {
+    const baseSlug = req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    req.body.slug = `${baseSlug}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
