@@ -19,7 +19,11 @@ const enquirySchema = new mongoose.Schema({
     trim: true
   },
   product: {
-    type: String,
+    type: String, // Can be ObjectId string or Slug
+    default: null
+  },
+  variant: {
+    type: String, // Can be ID or SKU
     default: null
   },
   status: {

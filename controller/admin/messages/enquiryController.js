@@ -32,8 +32,24 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
     {
       $lookup: {
         from: 'products',
-        localField: 'product',
-        foreignField: '_id',
+        let: { p_id: '$product' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $or: [
+                  { $eq: ['$slug', '$$p_id'] },
+                  {
+                    $eq: [
+                      '$_id',
+                      { $convert: { input: '$$p_id', to: 'objectId', onError: null, onNull: null } }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
         as: 'product'
       }
     },
@@ -47,9 +63,9 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
           { $limit: limit },
           {
             $project: {
-              fullName: 1,
+              fullName: { $ifNull: ['$fullName', '$name'] },
               phone: 1,
-              details: 1,
+              details: { $ifNull: ['$details', '$message'] },
               interest: 1,
               status: 1,
               variant: 1,
@@ -60,7 +76,6 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
                 image: 1,
                 category: 1,
                 shortDescription: 1,
-                // We find the specific variant details from the variants array
                 variantDetails: {
                   $arrayElemAt: [
                     {
@@ -69,7 +84,7 @@ exports.getEnquiries = asyncHandler(async (req, res, next) => {
                         as: 'v',
                         cond: {
                           $or: [
-                            { $eq: ['$$v._id', '$variant'] },
+                            { $eq: [{ $toString: '$$v._id' }, '$variant'] },
                             { $eq: ['$$v.sku', '$variant'] }
                           ]
                         }

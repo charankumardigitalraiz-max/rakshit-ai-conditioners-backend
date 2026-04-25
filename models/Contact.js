@@ -17,6 +17,9 @@ const ContactSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
+  interest: {
+    type: String,
+  },
   // subject: {
   //   type: String,
   //   required: [true, 'Please add a subject'],

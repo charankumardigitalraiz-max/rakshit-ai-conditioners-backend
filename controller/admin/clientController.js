@@ -1,7 +1,7 @@
 const Client = require('../../models/Client');
 const asyncHandler = require('../../middleware/asyncHandler');
 const ErrorResponse = require('../../utils/errorResponse');
-
+const Category = require('../../models/Category');
 // @desc    Get all clients
 // @route   GET /api/admin/clients
 // @access  Private (Admin)
@@ -11,21 +11,34 @@ exports.getClients = asyncHandler(async (req, res, next) => {
   const startIndex = (page - 1) * limit;
   let categoryId = req.query.category;
   let query = {};
-  if(categoryId === 'All') {
+
+  if (categoryId === 'All') {
     categoryId = null;
   }
+
   // Search filter
   if (req.query.search) {
     const keyword = req.query.search;
     page = 1;
+
+    // Find categories matching the keyword
+
+    const matchingCategories = await Category.find({
+      name: { $regex: keyword, $options: 'i' }
+    }).select('_id');
+
+    const categoryIds = matchingCategories.map(cat => cat._id);
+
     query.$or = [
       { name: { $regex: keyword, $options: 'i' } },
-      { location: { $regex: keyword, $options: 'i' } }
+      { location: { $regex: keyword, $options: 'i' } },
+      { category: { $in: categoryIds } }
     ];
   }
 
-  if (req.query.categoryId && req.query.categoryId !== 'All') {
-    query.category = req.query.category;
+  // Filter by category if provided
+  if (categoryId) {
+    query.category = categoryId;
   }
 
   const total = await Client.countDocuments(query);

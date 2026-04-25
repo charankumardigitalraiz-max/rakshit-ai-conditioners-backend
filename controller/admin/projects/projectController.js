@@ -1,4 +1,5 @@
 const Project = require('../../../models/projects');
+const Category = require('../../../models/Category');
 const asyncHandler = require('../../../middleware/asyncHandler');
 const ErrorResponse = require('../../../utils/errorResponse');
 
@@ -9,19 +10,29 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
   let page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
   const startIndex = (page - 1) * limit;
-  const categoryId = req.query.category;
+  let categoryId = req.query.category;
   let query = {};
-  if(categoryId === 'All') {
+
+  if (categoryId === 'All') {
     categoryId = null;
   }
+
   // Search filter
   if (req.query.search) {
     const keyword = req.query.search;
     page = 1;
+
+    // Find categories matching the keyword
+    const matchingCategories = await Category.find({
+      name: { $regex: keyword, $options: 'i' }
+    }).select('_id');
+
+    const categoryIds = matchingCategories.map(cat => cat._id);
+
     query.$or = [
       { title: { $regex: keyword, $options: 'i' } },
-      { category: { $regex: keyword, $options: 'i' } },
-      { location: { $regex: keyword, $options: 'i' } }
+      { location: { $regex: keyword, $options: 'i' } },
+      { category: { $in: categoryIds } }
     ];
   }
 
