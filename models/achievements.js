@@ -13,6 +13,7 @@ const achievementSchema = new mongoose.Schema({
   description: String,
   status: {
     type: String,
+    enum: ['Active', 'Inactive'],
     default: 'Active'
   },
   image: String
