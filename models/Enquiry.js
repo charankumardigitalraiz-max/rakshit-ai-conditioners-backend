@@ -10,6 +10,11 @@ const enquirySchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a phone number']
   },
+  email: {
+    type: String,
+    reqired: false
+    // required: [true, 'Please add an email']
+  },
   interest: {
     type: String,
     required: [true, 'Please select an interest']

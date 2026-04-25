@@ -3,8 +3,8 @@ const ErrorResponse = require('../../utils/errorResponse');
 const asyncHandler = require('../../middleware/asyncHandler');
 // Get all categories
 exports.getCategories = asyncHandler(async (req, res, next) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
+    // const page = parseInt(req.query.page, 10) || 1;
+    // const limit = parseInt(req.query.limit, 10) || 10;
     const startIndex = (page - 1) * limit;
 
     let query = {};
@@ -28,12 +28,6 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         count: categories.length,
-        pagination: {
-            page,
-            limit,
-            total,
-            pages: Math.ceil(total / limit)
-        },
         data: categories
     });
 });
